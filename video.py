@@ -21,8 +21,12 @@ class Video:
 
         return details
 
-    def resizeImageResolution(self, image, resolution):
-        pass
+    def printDetailsAboutVideo(self, details, filename):
+        print(f"video_path: {filename}")
+        print(f"video_fps: {details.VIDEO_FPS}")
+        print(f"video_width: {details.VIDEO_WIDTH}")
+        print(f"video_height: {details.VIDEO_HEIGHT}")
+        print(f"video_duration: {details.VIDEO_DURATION} seconds")
 
     def calculateTargetShapes(self, image, width_ratio, height_ratio):
         (current_height, current_width) = image.shape[:2]
