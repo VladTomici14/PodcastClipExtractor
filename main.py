@@ -1,3 +1,17 @@
+"""
+TODO:
+- add comments to the functions
+- add comments in general
+- write the documentation
+- (maybe) plot some results
+
+- add audio to outputs
+
+- test different scenarios
+- see why sometimes the script does not work
+- write exceptions for the code
+"""
+from moviepy.editor import AudioFileClip
 from timeit import default_timer as timer
 from datetime import datetime
 import numpy as np
@@ -24,9 +38,8 @@ details = video.getVideoDetails(input_video)
 video.printDetailsAboutVideo(details, args["input"])
 
 # ------------ handling the video audio ------------
-"""
-Maybe try to take the audio from the input video and just to stick it in the end to the output video. 
-"""
+audio_fps = details.VIDEO_FPS
+audio_frame_count = int(input_video.get(cv2.CAP_PROP_FRAME_COUNT))
 
 # ------------ preparing the output canvas ------------
 target_height = details.VIDEO_HEIGHT
@@ -71,6 +84,7 @@ fin_len_faces = detector.secondSorter(fin_len_faces)
 print(fin_len_faces)
 
 for i in range(len(frames)):
+    print(i)
     current_frame = frames[i]
     faces = faces_arr[i]
 
@@ -192,6 +206,14 @@ for i in range(len(frames)):
 
 input_video.release()
 cv2.destroyAllWindows()
+
+vid_aud = AudioFileClip(args["input"])
+audio = vid_aud.audio
+
+# Export the audio as a new audio file
+# audio_file_path = "extracted_audio.wav"  # Change this to your desired audio file format
+# audio.write_audiofile(audio_file_path, fps=details.VIDEO_FPS)
+
 
 # ------------ timer stop ------------
 end_timer = timer()
