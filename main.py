@@ -61,6 +61,7 @@ faces_arr = []
 contor1 = False
 contor2 = False
 
+# ------------ collecting and processing all the video ------------
 while input_video.isOpened():
     ret, frame = input_video.read()
 
@@ -78,13 +79,13 @@ while input_video.isOpened():
     else:
         break
 
-print(len_faces)
+# ------------ sorting the data ------------
 fin_len_faces, faces_arr = detector.sortArr(len_faces, faces_arr)
 fin_len_faces = detector.secondSorter(fin_len_faces)
-print(fin_len_faces)
+# print(fin_len_faces)
 
+# ------------ cropping the video ------------
 for i in range(len(frames)):
-    print(i)
     current_frame = frames[i]
     faces = faces_arr[i]
 
@@ -178,6 +179,7 @@ for i in range(len(frames)):
         center_video_x = min(center_face_x1, center_face_x2) + abs(center_face_x1 - center_face_x2) // 2
 
         # ------------ drawing bounding rectangle around the detected faces ------------
+        # TODO: add all of this in functions for drawing on the canvas
         # cv2.rectangle(frame, (x1, y1), (x1 + w1, y1 + h1), (0, 0, 255), 5)
         # cv2.circle(frame, (center_face_x1, center_face_y1), 4, (0, 255, 0), -1)
         #
@@ -189,6 +191,7 @@ for i in range(len(frames)):
         # cv2.putText(frame, str(face1["confidence"]), (center_face_x1, center_face_y1), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 3, cv2.LINE_AA)
         # cv2.putText(frame, str(face2["confidence"]), (center_face_x2, center_face_y2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 3, cv2.LINE_AA)
 
+        # ------------ ordering the speakers ------------
         if lim_right1 < center_video_x:
             output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
             output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
@@ -204,16 +207,13 @@ for i in range(len(frames)):
 
     output_video_16x9.write(output_canvas)
 
+# ------------ releasing the video usage ------------
 input_video.release()
 cv2.destroyAllWindows()
 
+# ------------ adding audio to the video ------------
 vid_aud = AudioFileClip(args["input"])
 audio = vid_aud.audio
-
-# Export the audio as a new audio file
-# audio_file_path = "extracted_audio.wav"  # Change this to your desired audio file format
-# audio.write_audiofile(audio_file_path, fps=details.VIDEO_FPS)
-
 
 # ------------ timer stop ------------
 end_timer = timer()

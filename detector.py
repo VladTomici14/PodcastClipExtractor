@@ -6,13 +6,12 @@ class Detector:
     def __init__(self):
         self.detector = MTCNN()
 
-    def preprocessImage(self, image):
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (5, 5), 5)
-
-        return blurred
-
     def returnCenterFaceCoordinates(self, face):
+        """
+        Function for returning the center coordinates of a face
+        :param face: processed face array which contains (x, y, w, h)
+        :return: center coordinates of the input face
+        """
         x, y, w, h = face["box"]
 
         center_face_x, center_face_y = x + w // 2, y + h // 2
@@ -20,6 +19,12 @@ class Detector:
         return center_face_x, center_face_y
 
     def sortArr(self, arr, output_arr):
+        """
+        Function for sorting the data resulted in processing.
+        :param arr:
+        :param output_arr:
+        :return:
+        """
         for i in range(len(arr)):
             if i > 0 and i <= len(arr):
                 if arr[i] == 0 and arr[i-1] != 0:
@@ -37,6 +42,7 @@ class Detector:
 
     def secondSorter(self, arr):
         """
+        The second function for sorting the data resulted in processing.
         :param arr:
         :return:
         """
@@ -80,22 +86,25 @@ class Detector:
         return fin_values
 
     def transformArray(self, arr, value):
+        """
+        Simple function for transforming an array of various values into an array with a single value
+
+            :param arr: input array
+            :param value: the value that should be presented in the array
+        :return: array with all the values equal to input value
+        """
         for i in range(len(arr)):
             arr[i] = value
 
         return arr
 
-    # def secondSort(self, arr, output_arr):
-    #     k = 0
-    #     for i in range(len(arr)):
-    #         if i > 0 and i <= len(arr):
-    #             if arr[i] == arr[i-1]:
-    #                 k += 1
-    #             else:
-    #                 if k <= 15:
-    #                     for j in range()
-
     def detectFaces(self, image):
+        """
+        Function for detecting faces based on input image
+
+            :param image: input image for detection
+        :return: array of all detected faces in the input image
+        """
         faces = self.detector.detect_faces(image)
 
         return faces
