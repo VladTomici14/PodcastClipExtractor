@@ -71,12 +71,10 @@ class Detector:
                 left_arr = values[i-1]
                 right_arr = values[i+1]
                 if len(values[i]) <= 15 and left_arr[0] == right_arr[0]: # FIXME: problems with 0 values
-                    print("da")
                     self.transformArray(values[i], left_arr[0])
 
         fin_values = []
         for i in range(len(values)):
-            print(i)
             print(f"subarr{i}: {values[i]}")
             for element in values[i]:
                 fin_values.append(element)
