@@ -72,9 +72,9 @@ while input_video.isOpened():
         break
 
 # ------------ sorting the data ------------
+print(len_faces)
 fin_len_faces, faces_arr = detector.sortArr(len_faces, faces_arr)
 fin_len_faces = detector.secondSorter(fin_len_faces)
-# print(fin_len_faces)
 
 # ------------ cropping the video ------------
 for i in range(len(frames)):
@@ -89,24 +89,32 @@ for i in range(len(frames)):
             faces_arr[i] = faces_arr[i+1]
             faces = faces_arr[i]
 
+    if len(faces) == 0:
+        lim_left = details.VIDEO_WIDTH // 2 - target_width // 2
+        lim_right = details.VIDEO_WIDTH // 2 + target_width // 2
+
     if fin_len_faces[i] == 1:
-        face = faces[0]
-        x, y, w, h = face["box"]
+        if len(faces) == 0:
+            lim_left = details.VIDEO_WIDTH // 2 - target_width // 2
+            lim_right = details.VIDEO_WIDTH // 2 + target_width // 2
+        else:
+            face = faces[0]
+            x, y, w, h = face["box"]
 
-        center_face_x, center_face_y = x + w // 2, y + h // 2
+            center_face_x, center_face_y = x + w // 2, y + h // 2
 
-        if contor1 == False:
-            lim_left = center_face_x - target_width // 2
-            lim_right = center_face_x + target_width // 2
+            if contor1 == False:
+                lim_left = center_face_x - target_width // 2
+                lim_right = center_face_x + target_width // 2
 
-            contor1 = True
+                contor1 = True
 
-        # ------------ condition of changing the camera if the face is waaaaaay too moved ------------
-        if not (lim_left + 100 < center_face_x < lim_right - 100):
-            lim_left = center_face_x - target_width // 2
-            lim_right = center_face_x + target_width // 2
+            # ------------ condition of changing the camera if the face is waaaaaay too moved ------------
+            if not (lim_left + 100 < center_face_x < lim_right - 100):
+                lim_left = center_face_x - target_width // 2
+                lim_right = center_face_x + target_width // 2
 
-        print(f"frame {i}: {output_canvas.shape}")
+            print(f"frame {i}: {output_canvas.shape}")
 
         output_canvas = current_frame[0:target_height, lim_left:lim_right]
 
