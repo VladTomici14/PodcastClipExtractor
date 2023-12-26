@@ -93,7 +93,10 @@ for i in range(len(frames)):
         lim_left = details.VIDEO_WIDTH // 2 - target_width // 2
         lim_right = details.VIDEO_WIDTH // 2 + target_width // 2
 
-    if fin_len_faces[i] == 1:
+        output_canvas = current_frame[0:target_height, lim_left:lim_right]
+
+
+    if fin_len_faces[i] == 1 and len(faces) != 0:
         if len(faces) == 0:
             lim_left = details.VIDEO_WIDTH // 2 - target_width // 2
             lim_right = details.VIDEO_WIDTH // 2 + target_width // 2
