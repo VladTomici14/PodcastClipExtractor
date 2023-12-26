@@ -48,20 +48,25 @@ faces_arr = []
 contor1 = False
 contor2 = False
 
+k = 0
 # ------------ collecting and processing all the video ------------
 while input_video.isOpened():
     ret, frame = input_video.read()
 
     if ret is True:
-        faces = detector.detectFaces(frame)
+        if k % 3 == False:
+            faces = detector.detectFaces(frame)
+            no_faces = len(faces)
 
-        if len(faces) > 2:
+        if no_faces > 2:
             len_faces.append(2)
         else:
-            len_faces.append(len(faces))
+            len_faces.append(no_faces)
 
         faces_arr.append(faces)
         frames.append(frame)
+
+        k = k + 1
 
     else:
         break
@@ -131,6 +136,14 @@ for i in range(len(frames)):
             lim_down2 = center_face_y2 + (target_height // 2) // 2
 
             contor2 = True
+
+        # if (not (lim_left1 + 25 < center_face_x1 < lim_right1 - 25)) and contor2 == True:
+        #     lim_left1 = center_face_x1 - target_width // 2
+        #     lim_right1 = center_face_x1 + target_width // 2
+        #
+        # if (not (lim_left2 + 25 < center_face_x2 < lim_right2 - 25)) and contor2 == True:
+        #     lim_left2 = center_face_x2 - target_width // 2
+        #     lim_right2 = center_face_x2 + target_width // 2
 
         # ------------ taking the ROI from the video ------------
         output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
