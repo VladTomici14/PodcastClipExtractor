@@ -140,11 +140,17 @@ for i in range(len(frames)):
             lim_right1 = center_face_x1 + target_width // 2
             lim_up1 = center_face_y1 - (target_height // 2) // 2
             lim_down1 = center_face_y1 + (target_height // 2) // 2
+            if lim_up1 < 0:
+                lim_up1 = 0
+                lim_down1 = target_height // 2
 
             lim_left2 = center_face_x2 - target_width // 2
             lim_right2 = center_face_x2 + target_width // 2
             lim_up2 = center_face_y2 - (target_height // 2) // 2
             lim_down2 = center_face_y2 + (target_height // 2) // 2
+            if lim_up2 < 0:
+                lim_up2 = 0
+                lim_down2 = target_height // 2
 
             contor2 = True
 
