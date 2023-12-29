@@ -117,7 +117,16 @@ for i in range(len(frames)):
                 lim_left = center_face_x - target_width // 2
                 lim_right = center_face_x + target_width // 2
 
-            print(f"frame {i}: {output_canvas.shape}")
+            if lim_left < 0:
+                lim_left = 0
+                lim_right = target_width
+
+            if lim_right > details.VIDEO_WIDTH:
+                lim_right = details.VIDEO_WIDTH
+                lim_left = details.VIDEO_WIDTH - target_width
+
+            print(f"frame {i} -- lim_left: {lim_left} -- lim_right: {lim_right}")
+            print(f"target_height {i}: {target_height}")
 
         output_canvas = current_frame[0:target_height, lim_left:lim_right]
 
@@ -143,6 +152,15 @@ for i in range(len(frames)):
             if lim_up1 < 0:
                 lim_up1 = 0
                 lim_down1 = target_height // 2
+            if lim_down1 > details.VIDEO_HEIGHT:
+                lim_down1 = details.VIDEO_HEIGHT
+                lim_up1 = target_height // 2
+            if lim_left1 < 0:
+                lim_left1 = 0
+                lim_right1 = target_width
+            if lim_right1 > details.VIDEO_WIDTH:
+                lim_right1 = details.VIDEO_WIDTH
+                lim_left1 = details.VIDEO_WIDTH - target_width
 
             lim_left2 = center_face_x2 - target_width // 2
             lim_right2 = center_face_x2 + target_width // 2
@@ -151,6 +169,15 @@ for i in range(len(frames)):
             if lim_up2 < 0:
                 lim_up2 = 0
                 lim_down2 = target_height // 2
+            if lim_down2 > details.VIDEO_HEIGHT:
+                lim_down2 = details.VIDEO_HEIGHT
+                lim_up2 = target_height // 2
+            if lim_left2 < 0:
+                lim_left2 = 0
+                lim_right2 = target_width
+            if lim_right2 > details.VIDEO_WIDTH:
+                lim_right2 = details.VIDEO_WIDTH
+                lim_left2 = details.VIDEO_WIDTH - target_width
 
             contor2 = True
 
