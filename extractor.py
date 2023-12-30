@@ -1,14 +1,10 @@
-import argparse
-
 from video import Video
 from detector import Detector
 
-import moviepy.editor as mpe
-from datetime import datetime
 import numpy as np
 import time
 import cv2
-import os
+
 
 class Extractor:
     def __init__(self):
@@ -17,14 +13,24 @@ class Extractor:
         self.target_height = None
         self.target_width = None
 
+        self.output_canvas = None
+        self.output_canvas_1 = None
+        self.output_canvas_2 = None
+        self.output_video_16x9 = None
+
         self.contor1 = False
         self.contor2 = False
 
         self.video = Video()
         self.detector = Detector()
 
-
     def openVideo(self, video_path):
+        """
+        Function that opens the video based on its path. It also gets all the details regarding it.
+
+        :param video_path: input video path
+        :return: input_video variable ready to be opened frame by frame
+        """
         input_video = cv2.VideoCapture(video_path)
         self.details = self.video.getVideoDetails(input_video)
         self.video.printDetailsAboutVideo(self.details, input_video)
@@ -32,23 +38,41 @@ class Extractor:
         return input_video
 
     def prepareOutputCanvases(self):
+        """
+        Function for creating all the output canvases that we will be using for the cropping process.
+
+        :return:
+            output_canvas: the blank canvas in the scenario where is only 1 face detected (9x16 ratio)
+            output_canvas_1: the first blank canvas in the scenario where are 2 faces detected (9x8 ratio)
+            output_canvas_2: the second blank canvas in the scenario where are 2 faces detected (9x8 ratio)
+            output_video_16x9 the blank canvas for the final output video (9x16 ratio)
+        """
         self.target_height = self.details.VIDEO_HEIGHT
         self.target_width = int((9 * self.target_height) / 16)
         if self.target_width % 2 == True: self.target_width = self.target_width - 1
-        output_canvas = np.zeros((self.target_height, self.target_width, 3), np.uint8)
-        output_canvas_1 = np.zeros((self.target_height // 2, self.target_width, 3), np.uint8)
-        output_canvas_2 = np.zeros((self.target_height // 2, self.target_width, 3), np.uint8)
+        self.output_canvas = np.zeros((self.target_height, self.target_width, 3), np.uint8)
+        self.output_canvas_1 = np.zeros((self.target_height // 2, self.target_width, 3), np.uint8)
+        self.output_canvas_2 = np.zeros((self.target_height // 2, self.target_width, 3), np.uint8)
         output_video_path = f"results/output_no_audio.mp4"
-        output_video_16x9 = cv2.VideoWriter(
+        self.output_video_16x9 = cv2.VideoWriter(
             output_video_path,
             cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
             self.details.VIDEO_FPS,
             (self.target_width, self.target_height)
         )
 
-        return output_canvas, output_canvas_1, output_canvas_2, output_video_16x9
+        return self.output_canvas, self.output_canvas_1, self.output_canvas_2, self.output_video_16x9
 
     def extractVideoFrames(self, input_video):
+        """
+        Function for extracting all the frames in the video.
+
+        :param input_video: input video variable based on the input video path that was created in the beginning of the process
+        :return:
+            frames: array of all the frames in the video
+            len_faces: array of all the number of faces detected per frame
+            faces_arr: array of all the detected faces per frame
+        """
         frames = []
         len_faces = []
         faces_arr = []
@@ -79,6 +103,14 @@ class Extractor:
         return frames, len_faces, faces_arr
 
     def cropFrames(self, frames, fin_len_faces, faces_arr, output_video_16x9):
+        """
+        Function for doing the actual cropping based on the detections that were done when reading the frames.
+
+        :param frames: array of the video frames
+        :param fin_len_faces: array of the sorted number of detected faces per frame
+        :param faces_arr: array of all the detected faces per frame
+        :param output_video_16x9: output canvas for writing all the frames in the end
+        """
         for i in range(len(frames)):
             current_frame = frames[i]
             faces = faces_arr[i]
@@ -95,7 +127,7 @@ class Extractor:
                 lim_left = self.details.VIDEO_WIDTH // 2 - self.target_width // 2
                 lim_right = self.details.VIDEO_WIDTH // 2 + self.target_width // 2
 
-                output_canvas = current_frame[0:self.target_height, lim_left:lim_right]
+                self.output_canvas = current_frame[0:self.target_height, lim_left:lim_right]
 
             if fin_len_faces[i] == 1 and len(faces) != 0:
                 if len(faces) == 0:
@@ -129,7 +161,7 @@ class Extractor:
                     print(f"frame {i} -- lim_left: {lim_left} -- lim_right: {lim_right}")
                     print(f"target_height {i}: {self.target_height}")
 
-                output_canvas = current_frame[0:self.target_height, lim_left:lim_right]
+                self.output_canvas = current_frame[0:self.target_height, lim_left:lim_right]
 
             elif fin_len_faces[i] == 2:
                 if len(faces) == 1:
@@ -182,39 +214,39 @@ class Extractor:
                     self.contor2 = True
 
                 # ------------ taking the ROI from the video ------------
-                output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
-                output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
+                self.output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
+                self.output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
 
                 center_video_x = min(center_face_x1, center_face_x2) + abs(center_face_x1 - center_face_x2) // 2
 
                 # ------------ ordering the speakers ------------
                 if lim_right1 < center_video_x:
-                    output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
-                    output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
+                    self.output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
+                    self.output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
                 elif lim_left1 > center_video_x:
-                    output_canvas_1 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
-                    output_canvas_2 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
+                    self.output_canvas_1 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
+                    self.output_canvas_2 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
 
                 latest_config = 2
 
                 # ------------ adding the ROIs into the 8:9 ratio ------------
-                output_canvas[0:self.target_height // 2, 0:self.target_width] = output_canvas_1
-                output_canvas[self.target_height // 2: self.target_height, 0:self.target_width] = output_canvas_2
+                self.output_canvas[0:self.target_height // 2, 0:self.target_width] = self.output_canvas_1
+                self.output_canvas[self.target_height // 2: self.target_height, 0:self.target_width] = self.output_canvas_2
 
-            output_video_16x9.write(output_canvas)
-
-    def addAudioToClip(self, video_path, input_audio_path):
-        clip = mpe.VideoFileClip(video_path)
-        input_audio_clip = mpe.VideoFileClip(input_audio_path)
-        final_clip = clip.set_audio(input_audio_clip.audio)
-        final_clip.write_videofile("results/output.mp4")
+            output_video_16x9.write(self.output_canvas)
 
     def extractOutputVideo(self, video_path):
+        """
+        Basically the main function of the detection that contains all the steps for the whole process of detecting.
+
+        :param video_path: the path of the input video
+        """
+
         # ------------ opening the video & getting details from it ------------
         input_video = self.openVideo(video_path)
 
         # ------------ preparing the output canvas ------------
-        output_canvas, output_canvas_1, output_canvas_2, output_video_16x9 = self.prepareOutputCanvases()
+        self.output_canvas, self.output_canvas_1, self.output_canvas_2, output_video_16x9 = self.prepareOutputCanvases()
 
         # ------------ collecting and processing all the video ------------
         frames, len_faces, faces_arr = self.extractVideoFrames(input_video)
@@ -230,22 +262,3 @@ class Extractor:
         # ------------ releasing the video usage ------------
         input_video.release()
         cv2.destroyAllWindows()
-
-        # ------------ waiting 5 seconds to write the video ------------
-        time.sleep(20)
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--input", required=True)
-    args = vars(ap.parse_args())
-
-    Extractor().extractOutputVideo(args["input"])
-
-    # ------------ adding audio to clip ------------
-    Extractor().addAudioToClip(str("results/output_no_audio.mp4"), str(args["input"]))
-    # os.system(f"python3 audio.py --input results/output_no_audio.mp4 --audio {video_path}")
-
-
-if __name__ == "__main__":
-    main()
