@@ -262,3 +262,6 @@ class Extractor:
         # ------------ releasing the video usage ------------
         input_video.release()
         cv2.destroyAllWindows()
+
+        # ------------ waiting some time for the file to fully write on the computer ------------
+        time.sleep(5)
