@@ -76,6 +76,9 @@ Extractor().extractOutputVideo(args["input"])
 Extractor().addAudioToClip(str("results/output_no_audio.mp4"), str(args["input"]))
 ```
 
-\n
+**DISCLAIMER: there is a possibility of not being able to write a new video on one that is already saved in the results file. The best thing to do before running the script is removing the ```output.mp4``` and ```output_no_audio.mp4``` files, then running the script.**
+
 And there you go ! Everything should be ok ! :) 
+
+
 
