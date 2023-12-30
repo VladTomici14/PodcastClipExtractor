@@ -20,7 +20,7 @@ pip install moviepy
 pip install numpy
 ```
 
-## 2) Run 
+## 2) Run script
 
 Before running, you need to know the project structure. All the input videos will be in the ```input``` directory. After running the ```main.py``` script, the cropped video will be saved in the ```results``` directory.
 
@@ -40,11 +40,41 @@ python3 audio.py --input results/cropped_file.mp4 --audio input/joe-rogan-1.mp4
 
 After you have cropped the video, you can add the audio from the original file by running the script ```audio.py```. 
 
-\n
 Basically, this script takes the audio from the original video and sticks it up to the cropped video. After the ```--input``` argument, you need to add the path of the cropped video. After the ```--audio```, you need to add the input file with the audio. 
 
-\n
+
 The output file with sound, will be saved in the project directory, and will be named ```output.mp4```.
+
+
+## 3) Use the class
+All the code for this project was integrated in a specific class that contains all the functions for this project to work. 
+
+All of this, can be found in the ```extractor.py``` file.
+
+**All the files need to be pulled from the repository for this to work.**
+
+Then, your implementation of the class can look like something like this:
+
+```python
+# -------------
+# - main-2.py -
+# -------------
+
+# ------------ importing all the libraries and classes ------------
+from extractor import Extractor
+import argparse 
+
+# ------------ argparsing the video path ------------
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--input", required=True)
+args = vars(ap.parse_args())
+
+# ------------ creating the output video ------------
+Extractor().extractOutputVideo(args["input"])
+
+# ------------ adding audio to clip ------------
+Extractor().addAudioToClip(str("results/output_no_audio.mp4"), str(args["input"]))
+```
 
 \n
 And there you go ! Everything should be ok ! :) 
