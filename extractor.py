@@ -100,6 +100,8 @@ class Extractor:
             else:
                 break
 
+        input_video.release()
+
         return frames, len_faces, faces_arr
 
     def cropFrames(self, frames, fin_len_faces, faces_arr, output_video_16x9):
@@ -234,6 +236,8 @@ class Extractor:
                 self.output_canvas[self.target_height // 2: self.target_height, 0:self.target_width] = self.output_canvas_2
 
             output_video_16x9.write(self.output_canvas)
+
+        output_video_16x9.release()
 
     def extractOutputVideo(self, video_path):
         """
