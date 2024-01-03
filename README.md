@@ -8,6 +8,7 @@ cv2==4.6.0
 argparse=1.1
 moviepy==1.0.3
 numpy=1.26.0
+alive_progress=3.1.5
 datetime
 timeit
 ```
@@ -18,6 +19,7 @@ pip install opencv-python
 pip install argparse
 pip install moviepy
 pip install numpy
+pip install alive_progress
 ```
 
 ## 2) Run script
