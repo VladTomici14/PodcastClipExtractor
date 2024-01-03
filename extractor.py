@@ -1,10 +1,10 @@
 from video import Video
 from detector import Detector
 
+from alive_progress import alive_bar
 import numpy as np
 import time
 import cv2
-
 
 class Extractor:
     def __init__(self):
@@ -79,26 +79,28 @@ class Extractor:
 
         k = 0
         # ------------ collecting and processing all the video ------------
-        while input_video.isOpened():
-            ret, frame = input_video.read()
+        with alive_bar(self.details.VIDEO_NOFRAMES) as bar:
+            while input_video.isOpened():
+                ret, frame = input_video.read()
 
-            if ret is True:
-                if k % 3 == False:
-                    faces = self.detector.detectFaces(frame)
-                    no_faces = len(faces)
+                if ret is True:
+                    if k % 3 == False:
+                        faces = self.detector.detectFaces(frame)
+                        no_faces = len(faces)
 
-                if no_faces > 2:
-                    len_faces.append(2)
+                    if no_faces > 2:
+                        len_faces.append(2)
+                    else:
+                        len_faces.append(no_faces)
+
+                    faces_arr.append(faces)
+                    frames.append(frame)
+
+                    k = k + 1
+                    bar()
+
                 else:
-                    len_faces.append(no_faces)
-
-                faces_arr.append(faces)
-                frames.append(frame)
-
-                k = k + 1
-
-            else:
-                break
+                    break
 
         input_video.release()
 
@@ -216,8 +218,10 @@ class Extractor:
                     self.contor2 = True
 
                 # ------------ taking the ROI from the video ------------
-                self.output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
-                self.output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
+                if current_frame[lim_up1:lim_down1, lim_left1:lim_right1].shape == self.output_canvas_1.shape:
+                    self.output_canvas_1 = current_frame[lim_up1:lim_down1, lim_left1:lim_right1]
+                if current_frame[lim_up2:lim_down2, lim_left2:lim_right2].shape == self.output_canvas_2.shape:
+                    self.output_canvas_2 = current_frame[lim_up2:lim_down2, lim_left2:lim_right2]
 
                 center_video_x = min(center_face_x1, center_face_x2) + abs(center_face_x1 - center_face_x2) // 2
 
