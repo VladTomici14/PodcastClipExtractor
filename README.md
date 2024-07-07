@@ -1,5 +1,7 @@
 # Podcast 16x9 clip extractor 
 
+This project is a tool designed to transform traditional 16:9 podcast videos into engaging 9:16 videos, suitable for social media platforms like Instragram and TikTok. This project extracts the speakers' faces from the input podcast video and formats them into a separate portrait video, making it easy to share podcast content in a format optimized for mobile viewing. 
+
 ## Video demos 
 - [Podcast Clip Extractor - Demo 1](https://youtu.be/OQPJywNL38s)
 - [Podcast Clip Extractor - Demo 2](https://youtu.be/IdBEriMVhHQ)
