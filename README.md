@@ -1,5 +1,11 @@
 # Podcast 16x9 clip extractor 
 
+## Video demos 
+[https://youtu.be/OQPJywNL38s](Podcast Clip Extractor - Demo 1)
+[https://youtu.be/IdBEriMVhHQ](Podcast Clip Extractor - Demo 2)
+[https://youtu.be/zmxIig9M6y8](Podcast Clip Extractor - Demo 3)
+[https://youtu.be/AiJ9lxnGIjo](Podcast Clip Extractor - Demo 4)
+
 ## 1) Install 
 
 1. Requirements for the install (```datetime``` and ```timeit``` should be installed already with python)
