@@ -1,10 +1,10 @@
 # Podcast 16x9 clip extractor 
 
 ## Video demos 
-[Podcast Clip Extractor - Demo 1](https://youtu.be/OQPJywNL38s)
-[Podcast Clip Extractor - Demo 2](https://youtu.be/IdBEriMVhHQ)
-[Podcast Clip Extractor - Demo 3](https://youtu.be/zmxIig9M6y8)
-[Podcast Clip Extractor - Demo 4](https://youtu.be/AiJ9lxnGIjo)
+- [Podcast Clip Extractor - Demo 1](https://youtu.be/OQPJywNL38s)
+- [Podcast Clip Extractor - Demo 2](https://youtu.be/IdBEriMVhHQ)
+- [Podcast Clip Extractor - Demo 3](https://youtu.be/zmxIig9M6y8)
+- [Podcast Clip Extractor - Demo 4](https://youtu.be/AiJ9lxnGIjo)
 
 ## 1) Install 
 
